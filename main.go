@@ -1,48 +1,35 @@
 package main
 
 import (
-	"errors"
 	"fmt"
+	"html/template"
 	"net/http"
 )
 
 const portNumber string = ":8080"
 
 func home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "This is the home page")
+	renderTemplate(w, "home-page.html")
 }
 
 func about(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "This is the about page")
+	renderTemplate(w, "about-page.html")
 }
 
-func divide(w http.ResponseWriter, r *http.Request) {
-	result, err := divideValues(100.0, 0.0)
+func renderTemplate(w http.ResponseWriter, templatePage string) {
+	parsedTemplatePage, _ := template.ParseFiles("./templates/" + templatePage)
+
+	err := parsedTemplatePage.Execute(w, nil)
+
 	if err != nil {
-		fmt.Fprintf(w, err.Error())
+		fmt.Println("error parsin template:", err)
 		return
 	}
-	fmt.Fprintf(w, fmt.Sprintf("%f divided by %f is %f", 100.0, 0.0, result))
-	return
-}
-
-func divideValues(x, y float32) (float32, error) {
-
-	// check if y - divisor - is not 0 or negative
-	if y <= 0 {
-		return 0, errors.New("divisor is 0 or negative. not allowed.")
-	}
-
-	result := x / y
-
-	return result, nil
 }
 
 func main() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/about", about)
-
-	http.HandleFunc("/divide", divide)
 
 	fmt.Println(fmt.Sprintf("Starting webApp on port %s", portNumber))
 
