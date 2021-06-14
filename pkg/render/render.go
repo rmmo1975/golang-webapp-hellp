@@ -7,34 +7,39 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"example.com/pkg/config"
 )
 
 var functions = template.FuncMap{}
 
+var app *config.AppConfig
+
+func SetAppConfig(a *config.AppConfig) {
+	app = a
+}
+
 func RenderTemplate(w http.ResponseWriter, templatePage string) {
 
-	tc, err := createTemplateCache()
-	if err != nil {
-		log.Fatal(err)
-	}
+	tc := app.TemplateCache
 
 	t, ok := tc[templatePage]
 	if !ok {
-		log.Fatal("template not found", err)
+		log.Fatal("template not found from cache")
 	}
 
 	buf := new(bytes.Buffer)
 
 	_ = t.Execute(buf, nil)
 
-	_, err = buf.WriteTo(w)
+	_, err := buf.WriteTo(w)
 
 	if err != nil {
 		fmt.Println("error writing template to browser", err)
 	}
 }
 
-func createTemplateCache() (map[string]*template.Template, error) {
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
 	pages, err := filepath.Glob("./templates/*-page.html")
@@ -46,6 +51,7 @@ func createTemplateCache() (map[string]*template.Template, error) {
 	for _, page := range pages {
 		name := filepath.Base(page)
 		// just to inform that the current page loaded
+		fmt.Println("current page loaded:", page)
 
 		ts, err := template.New(name).Funcs(functions).ParseFiles(page)
 
