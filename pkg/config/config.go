@@ -4,5 +4,6 @@ import "html/template"
 
 // AppConfig holds the webapp config
 type AppConfig struct {
+	UseCache      bool
 	TemplateCache map[string]*template.Template
 }
