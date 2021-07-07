@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"example.com/pkg/config"
@@ -42,7 +43,9 @@ func RenderTemplate(w http.ResponseWriter, templatePage string) {
 func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./templates/*-page.html")
+	rootTemplatesDir := os.Getenv("TEMPLATES_PATH")
+
+	pages, err := filepath.Glob(rootTemplatesDir + "/templates/*-page.html")
 
 	if err != nil {
 		return myCache, err
@@ -59,14 +62,14 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 			return myCache, err
 		}
 
-		layouts, err := filepath.Glob("./templates/*-layout.html")
+		layouts, err := filepath.Glob(rootTemplatesDir + "/templates/*-layout.html")
 
 		if err != nil {
 			return myCache, err
 		}
 
 		if len(layouts) > 0 {
-			ts, err := ts.ParseGlob("./templates/*-layout.html")
+			ts, err := ts.ParseGlob(rootTemplatesDir + "/templates/*-layout.html")
 			if err != nil {
 				return myCache, err
 			}
