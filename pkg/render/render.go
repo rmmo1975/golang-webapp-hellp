@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 
 	"example.com/pkg/config"
+	"example.com/pkg/models"
 )
 
 var functions = template.FuncMap{}
@@ -20,7 +21,7 @@ func SetAppConfig(a *config.AppConfig) {
 	app = a
 }
 
-func RenderTemplate(w http.ResponseWriter, templatePage string) {
+func RenderTemplate(w http.ResponseWriter, templatePage string, templateData *models.TemplateData) {
 
 	var tc map[string]*template.Template
 	if app.UseCache {
@@ -36,7 +37,7 @@ func RenderTemplate(w http.ResponseWriter, templatePage string) {
 
 	buf := new(bytes.Buffer)
 
-	_ = t.Execute(buf, nil)
+	_ = t.Execute(buf, templateData)
 
 	_, err := buf.WriteTo(w)
 
