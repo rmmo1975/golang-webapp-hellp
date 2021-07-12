@@ -9,14 +9,14 @@
       "type": "go",
       "request": "launch",
       "mode": "debug",
-      "program": "${file}/cmd/web/main.go"
+      "program": "${file}/cmd/web"
     },
     {
       "name": "my program",
       "type": "go",
       "request": "launch",
       "mode": "debug",
-      "program": "${workspaceFolder}/cmd/web/main.go",
+      "program": "${workspaceFolder}/cmd/web",
       "host": "127.0.0.1",
       "port": 2345,
       "env": { "TEMPLATES_PATH": "${workspaceFolder}", "USE_CACHE": false }
