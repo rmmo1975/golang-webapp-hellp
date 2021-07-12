@@ -31,10 +31,11 @@ func main() {
 
 	render.SetAppConfig(&app)
 
-	http.HandleFunc("/", handlers.Repo.Home)
-	http.HandleFunc("/about", handlers.Repo.About)
+	serve := &http.Server{
+		Addr:    portNumber,
+		Handler: routes(&app),
+	}
 
 	fmt.Println(fmt.Sprintf("Starting webApp on port %s", portNumber))
-
-	_ = http.ListenAndServe(":8080", nil)
+	_ = serve.ListenAndServe()
 }
